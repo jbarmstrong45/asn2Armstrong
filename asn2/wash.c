@@ -8,12 +8,14 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <utime.h>
 
 #define BUFFER_SIZE 1024
 
 int main(int argc, char *argv[])
 {
   void quit    (void);
+  void list    (char currentFile[]);
   void copy    (char currentFile[]);
   void giveName(char currentFile[]);
   void delete  (char currentFile[]);
@@ -21,6 +23,7 @@ int main(int argc, char *argv[])
   void append  (char currentFile[]);
   void display (char currentFile[]);
   void chPermission (char currentFile[]);
+  void chTime  (char currentFile[]);
 
   char arg1[30];
   char arg2[30];
@@ -62,6 +65,10 @@ int main(int argc, char *argv[])
     {
       quit();
     }
+    else if(strcmp(action,"c") == 0)
+    {
+      list(currentFile);
+    }
     else if(strcmp(action,"d") == 0)
     {
       copy(currentFile);
@@ -95,7 +102,7 @@ int main(int argc, char *argv[])
 
 }
 
-void c(void)
+void list(char currentFile[])
 {
 
 }
@@ -235,9 +242,17 @@ void chPermission(char currentFile[])
   chmod(currentFile, S_IWGRP);
 }
 
-void x(void)
+void chTime(char currentFile[])
 {
+  int retV;
+  struct utimbuf utimeStruct;
 
+  utimeStruct.actime = 0;
+
+  if(utime(currentFile, &utimeStruct) != 0)
+  {
+    printf("There was an error with time");
+  }
 }
 
 void n(void)
