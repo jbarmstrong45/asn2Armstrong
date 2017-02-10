@@ -13,10 +13,14 @@
 
 int main(int argc, char *argv[])
 {
-  void q(void);
-  void d(char currentFile[]);
-  void r(char currentFile[]);
-  void u(char currentFile[]);
+  void quit    (void);
+  void copy    (char currentFile[]);
+  void giveName(char currentFile[]);
+  void delete  (char currentFile[]);
+  void zero    (char currentFile[]);
+  void append  (char currentFile[]);
+  void display (char currentFile[]);
+  void chPermission (char currentFile[]);
 
   char arg1[30];
   char arg2[30];
@@ -56,19 +60,31 @@ int main(int argc, char *argv[])
     scanf("%s", action);
     if(strcmp(action,"q") == 0)
     {
-      q();
+      quit();
     }
     else if(strcmp(action,"d") == 0)
     {
-      d(currentFile);
+      copy(currentFile);
     }
     else if(strcmp(action,"r") == 0)
     {
-      r(currentFile);
+      giveName(currentFile);
     }
     else if(strcmp(action,"u") == 0)
     {
-      u(currentFile);
+      delete(currentFile);
+    }
+    else if(strcmp(action,"t") == 0)
+    {
+      zero(currentFile);
+    }
+    else if(strcmp(action,"a") == 0)
+    {
+      append(currentFile);
+    }
+    else if(strcmp(action,"l") == 0)
+    {
+      display(currentFile);
     }
     else
     {
@@ -84,7 +100,7 @@ void c(void)
 
 }
 
-void d(char currentFile[])
+void copy(char currentFile[])
 {
   int readDescriptor;
   int writeDescriptor;
@@ -138,7 +154,7 @@ void d(char currentFile[])
   }
 }
 
-void r(char currentFile[])
+void giveName(char currentFile[])
 {
   char newName[30];
   printf("what is its new name?\n");
@@ -147,29 +163,76 @@ void r(char currentFile[])
   rename(currentFile, newName);
 }
 
-void u(char currentFile[])
+void delete(char currentFile[])
 {
   unlink(currentFile);
 }
 
-void t(void)
+/*
+* deletes the file, then creates a new file with the same name
+*/
+void zero(char currentFile[])
 {
-
+  char fileName[30];
+  strcpy(fileName, currentFile);
+  delete(currentFile);
+  
+  FILE *file = NULL;
+  file = fopen(fileName, "a");
 }
 
-void a(void)
+void append(char currentFile[])
 {
+  FILE *file1;
+  FILE *file2;
+  char buffer[100];
 
+  char destination[30];
+  printf("which file should be appended to?");
+  scanf("%s", destination);
+
+  file1 = fopen(currentFile, "r");
+  file2 = fopen(destination, "a");
+  if(file1 == NULL)
+  {
+    printf("There was an error with open");
+  }
+  else
+  {
+    while(fgets(buffer, sizeof(buffer), file1))
+    {
+      fprintf(file2, "%s", buffer);
+    }
+  }
+  fclose(file2);
 }
 
-void l(void)
+void display(char currentFile[])
 {
+  int fileDescriptor;
+  int readByte;
+  char buffer[101];
 
+  if((fileDescriptor = open(currentFile, O_RDONLY)) < 0)
+  {
+    printf("There was an error with open");
+  }
+
+  lseek(fileDescriptor, -100L, SEEK_END);
+  readByte = read(fileDescriptor, buffer, 100);
+  buffer[readByte] = '\0';
+
+  printf("%s\n", buffer);
 }
 
-void m(void)
+void chPermission(char currentFile[])
 {
+  char mode[5];
+  printf("What would you like to change the permission to?");
+  scanf("%s", mode);
 
+  //int chmod (const char *filename, mode_t mode);
+  chmod(currentFile, S_IWGRP);
 }
 
 void x(void)
@@ -182,7 +245,7 @@ void n(void)
 
 }
 
-void q(void)
+void quit(void)
 {
   exit(0);
 }
