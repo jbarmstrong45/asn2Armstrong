@@ -24,7 +24,9 @@ int main(int argc, char *argv[])
   void display (char currentFile[]);
   void chPermission (char currentFile[]);
   void chTime  (char currentFile[]);
+  void next    (char currentFile[], int counter, char args[][30]);
 
+  int counter;
   char arg1[30];
   char arg2[30];
   char arg3[30];
@@ -40,7 +42,8 @@ int main(int argc, char *argv[])
     strcpy(arg1, argv[0]);
     strcpy(arg2, argv[1]);
     strcpy(currentFile, arg2);
-    strcpy(args[0], currentFile);
+    strcpy(args[0], arg2);
+    
   }
   else if(argc == 3)
   {
@@ -48,6 +51,9 @@ int main(int argc, char *argv[])
     strcpy(arg2, argv[1]);
     strcpy(arg3, argv[2]);
     strcpy(currentFile, arg2);
+    strcpy(args[0], arg2);
+    strcpy(args[1], arg3);
+    counter = 0;
   }
   else
   {
@@ -93,6 +99,11 @@ int main(int argc, char *argv[])
     {
       display(currentFile);
     }
+    else if(strcmp(action,"n") == 0)
+    {
+      counter++;
+      next(currentFile, counter, args);
+    }
     else
     {
       continue;
@@ -104,7 +115,24 @@ int main(int argc, char *argv[])
 
 void list(char currentFile[])
 {
+  int c;
+  FILE *file;
 
+  file = fopen(currentFile, "r");
+  if(file == NULL)
+  {
+   perror("opendir");
+  }
+  else
+  {
+    c = fgetc(file);
+    while(c != EOF)
+    {
+      printf("%c", c);
+      c = fgetc(file);
+    }
+  }
+  
 }
 
 void copy(char currentFile[])
@@ -255,9 +283,11 @@ void chTime(char currentFile[])
   }
 }
 
-void n(void)
+void next(char currentFile[], int counter, char args[][30])
 {
-
+  printf("The current file is %s\n", currentFile);
+  strcpy(currentFile, args[counter]);
+  printf("The new current file is %s\n", currentFile);
 }
 
 void quit(void)
