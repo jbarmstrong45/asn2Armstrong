@@ -150,15 +150,13 @@ void copy(char currentFile[])
 
   if((readDescriptor = open(currentFile, O_RDONLY, 0)) < 0)
   {
-    printf("%d", readDescriptor);
-    printf("There was an error with open\n");
+    perror("readdir");
   }
   
   if((writeDescriptor = open(destination, O_WRONLY | O_CREAT | O_TRUNC,
                              S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0)
   {
-    printf("%d", writeDescriptor);
-    printf("There was an error with open\n");
+    perror("writedir");
   }
 
   while(1)
@@ -171,7 +169,7 @@ void copy(char currentFile[])
       {
         if((writtenChars = write(writeDescriptor, pointer, readChars)) < 0)
 	{
-	  printf("There was an error with write");
+	  perror("writedir");
 	}
 
 	readChars -= writtenChars;
@@ -184,7 +182,7 @@ void copy(char currentFile[])
     }
     else
     {
-      printf("There was an error with read");
+      perror("readdir");
     }
   }
 }
@@ -230,7 +228,7 @@ void append(char currentFile[])
   file2 = fopen(destination, "a");
   if(file1 == NULL)
   {
-    printf("There was an error with open");
+    perror("opendir");
   }
   else
   {
@@ -250,7 +248,7 @@ void display(char currentFile[])
 
   if((fileDescriptor = open(currentFile, O_RDONLY)) < 0)
   {
-    printf("There was an error with open");
+    perror("opendir");
   }
 
   lseek(fileDescriptor, -100L, SEEK_END);
@@ -279,15 +277,13 @@ void chTime(char currentFile[])
 
   if(utime(currentFile, &utimeStruct) != 0)
   {
-    printf("There was an error with time");
+    perror("timedir");
   }
 }
 
 void next(char currentFile[], int counter, char args[][30])
 {
-  printf("The current file is %s\n", currentFile);
   strcpy(currentFile, args[counter]);
-  printf("The new current file is %s\n", currentFile);
 }
 
 void quit(void)
